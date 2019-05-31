@@ -16,7 +16,8 @@
 BLEDis bledis;
 BLEHidAdafruit blehid;
 
-bool haskeyPressed[5][12];
+int pressedRows[5];
+int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
 int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
 /*char Activation[2][5][12] = {
@@ -39,12 +40,12 @@ char Activation[5][12] =
 { 0,'Q','W','E','R','T','Y','U','I','O','P','-' } ,
 { 0,'A','S','D','F','G','H','J','K','L',';',0 } ,
 { 0,'Z','X','C','V','B','N','M',',','.','\'', } ,
-{ 0,0,0,0,0,0,0,0,0,0,0 }};
-char modsnnonprntbles[5][12] = 
-{{ HID_KEY_ESCAPE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE, HID_KEY_BACKSPACE } ,
-{ HID_KEY_TAB, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE } ,
-{ HID_KEY_CAPS_LOCK, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE, HID_KEY_RETURN } ,
-{ HID_KEY_SHIFT_LEFT, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE, HID_KEY_NONE } ,
+{ 0,0,0,0,0,0,0,0,0,0,0 }}; 
+char activationCodes[5][12] = 
+{{ HID_KEY_ESCAPE,HID_KEY_1,HID_KEY_2,HID_KEY_3,HID_KEY_4,HID_KEY_5,HID_KEY_6,HID_KEY_7,HID_KEY_8,HID_KEY_9,HID_KEY_0, HID_KEY_BACKSPACE } ,
+{ HID_KEY_TAB,HID_KEY_Q,HID_KEY_W,HID_KEY_E,HID_KEY_R,HID_KEY_T,HID_KEY_Y,HID_KEY_U,HID_KEY_I,HID_KEY_O,HID_KEY_P,HID_KEY_MINUS } ,
+{ HID_KEY_CAPS_LOCK, HID_KEY_A,HID_KEY_S, HID_KEY_D,HID_KEY_F,HID_KEY_G,HID_KEY_H,HID_KEY_J,HID_KEY_K,HID_KEY_L,HID_KEY_SEMICOLON, HID_KEY_RETURN } ,
+{ HID_KEY_SHIFT_LEFT,HID_KEY_Z,HID_KEY_X, HID_KEY_C,HID_KEY_V, HID_KEY_B,HID_KEY_N,HID_KEY_M,HID_KEY_COMMA,HID_KEY_PERIOD,HID_KEY_BACKSLASH, HID_KEY_SHIFT_RIGHT } ,
 { HID_KEY_CONTROL_LEFT, HID_KEY_GUI_LEFT,HID_KEY_SPACE,HID_KEY_SPACE,HID_KEY_SPACE,HID_KEY_SPACE,HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_NONE, HID_KEY_ALT_RIGHT, HID_KEY_POWER }};
 void setup() 
 {
@@ -140,13 +141,15 @@ void startAdv(void)
   Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds
 }
-void keyreport(char HIDcode)
+void keyreport(char HIDcode, int activerowKeys, int activecolumnKeys)
 {
-  uint8_t keyCodes[6] = {  HIDcode , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE };
+  uint8_t keyCodes[6] = {  HIDcode , activationCodes[activerowKeys[0]][activecolumnKeys[0]] , activationCodes[activerowKeys[1]][activecolumnKeys[1]] , activationCodes[activerowKeys[2]][activecolumnKeys[2]] , activationCodes[activerowKeys[3]][activecolumnKeys[3]] , activationCodes[activerowKeys[4]][activecolumnKeys[4]] };
     blehid.keyboardReport( HID_KEY_NONE , keyCodes );
 }
 void loop() 
 {
+  int savedRows[5];
+    int savedColumns[5];
   // Modifiers are here..
   // https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/200b3aaefb3256ac26df82ebc9b5b58923d9c37c/cores/nRF5/Adafruit_TinyUSB_Core/tinyusb/src/class/hid/hid.h#L188
   // Keycodes are here..
@@ -166,19 +169,38 @@ if(digitalRead(columnPin[columnCount]) == LOW)
   int a = Activation[rowCount][columnCount];
   if(a == 0)//zero means non letter
   {
+    keyreport(modsnnonprntbles[rowCount][columnCount], savedRows, savedColumns);
     
-    keyreport(modsnnonprntbles[rowCount][columnCount]);
-    haskeyPressed[rowCount][columnCount] = true;
   } else
   {
       blehid.keyPress(a);
       blehid.keyRelease();
       haskeyPressed[rowCount][columnCount] = true;
+      for (int x = 0; x < 5, x++)
+      {
+        if( savedRows[x] == 0 )
+        {
+          savedRows[x] == rowCount;
+        }
+        if( savedColumns[x] = 0 )
+        {
+          savedCoulumns[x] = columnCount;
+        }
+      }
   }
-} else
-{
-  haskeyPressed[rowCount][columnCount] = false;
 }
+for (int y = 0; y < 5, y++)
+      {
+        if( savedRows[y] == rowCount )
+        {
+          savedRows[y] = 0;
+        }
+        if( savedColumns[y] == columnCount )
+        {
+          savedCoulumns[y] = 0;
+        }
+      }
+  haskeyPressed[rowCount][columnCount] = false;
   }
 digitalWrite(rowPin[rowCount], HIGH);
 }
