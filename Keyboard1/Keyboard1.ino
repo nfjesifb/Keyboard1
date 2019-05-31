@@ -16,7 +16,7 @@
 BLEDis bledis;
 BLEHidAdafruit blehid;
 
-bool hasKeyPressed = false;
+bool haskeyPressed[5][12];
 int rowPin[5] = { 4, 3, 2, 5, 20};
 int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
 /*char Activation[2][5][12] = {
@@ -147,7 +147,6 @@ void keyreport(char HIDcode)
 }
 void loop() 
 {
-  
   // Modifiers are here..
   // https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/200b3aaefb3256ac26df82ebc9b5b58923d9c37c/cores/nRF5/Adafruit_TinyUSB_Core/tinyusb/src/class/hid/hid.h#L188
   // Keycodes are here..
@@ -167,12 +166,18 @@ if(digitalRead(columnPin[columnCount]) == LOW)
   int a = Activation[rowCount][columnCount];
   if(a == 0)//zero means non letter
   {
+    
     keyreport(modsnnonprntbles[rowCount][columnCount]);
+    haskeyPressed[rowCount][columnCount] = true;
   } else
   {
       blehid.keyPress(a);
       blehid.keyRelease();
+      haskeyPressed[rowCount][columnCount] = true;
   }
+} else
+{
+  haskeyPressed[rowCount][columnCount] = false;
 }
   }
 digitalWrite(rowPin[rowCount], HIGH);
