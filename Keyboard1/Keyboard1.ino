@@ -96,24 +96,24 @@ void setup()
   // Set up and start advertising
   startAdv();
 
-  pinMode(20, OUTPUT);
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(12, INPUT_PULLUP);
-  pinMode(13, INPUT_PULLUP);
-  pinMode(14, INPUT_PULLUP);
-  pinMode(8, INPUT_PULLUP);
-  pinMode(6, INPUT_PULLUP);
-  pinMode(25, INPUT_PULLUP);
-  pinMode(26, INPUT_PULLUP);
-  pinMode(27, INPUT_PULLUP);
-  pinMode(11, INPUT_PULLUP);
-  pinMode(7, INPUT_PULLUP);
-  pinMode(15, INPUT_PULLUP);
-  pinMode(16, INPUT_PULLUP);
-
+  pinMode(20, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  pinMode(4, INPUT_PULLUP);
+  pinMode(5, INPUT_PULLUP);
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  pinMode(14, OUTPUT);
+  pinMode(8, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(25, OUTPUT);
+  pinMode(26, OUTPUT);
+  pinMode(27, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(7, OUTPUT);
+  pinMode(15, OUTPUT);
+  pinMode(16, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void startAdv(void)
@@ -148,15 +148,15 @@ void modkeyreport(bool shift, bool alt, bool control, char key)
   uint8_t keyCodes[6] = { key, 0, 0, 0, 0, 0 };
   if ( shift == true)
   {
-    blehid.keyboardReport( 'HID_KEY_SHIFT_LEFT' , keyCodes );
+    blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , keyCodes );
   }
   if ( alt == true)
   {
-    blehid.keyboardReport( 'HID_KEY_ALT_RIGHT' , keyCodes );
+    blehid.keyboardReport( KEYBOARD_MODIFIER_RIGHTALT , keyCodes );
   }
   if ( control == true)
   {
-    blehid.keyboardReport( 'HID_KEY_CONTROL`_LEFT' , keyCodes );
+    blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTCTRL , keyCodes );
   }
 }
 void keyreport(char HIDcode)
@@ -164,13 +164,40 @@ void keyreport(char HIDcode)
   uint8_t keyCodes[6] = { 0, 0, 0, 0, 0, 0 };
   blehid.keyboardReport( HIDcode , keyCodes );
 }
-
+void blinky(int number_of_blinks)
+{
+  while (number_of_blinks > 0)
+  {
+    digitalWrite(LED_BUILTIN, 1);
+  delay(200);
+  digitalWrite(LED_BUILTIN, 0);
+  delay(200);
+  number_of_blinks--;
+  }
+  delay(500);
+}
 void loop()
 {
+  digitalWrite(columnPin[1], 0);
+  if (digitalRead(rowPin[2]) == LOW)
+  {
+   blinky(3);
+  } else
+  {
+    blinky(1);
+  }
+  digitalWrite(columnPin[1], 1);
+  return;
+
+
+
+
+
+  
   blehid.keyPress('1');
   blehid.keyRelease();
   uint8_t keyCodes[6] = { HID_KEY_A, 0, 0, 0, 0, 0 };
-  blehid.keyboardReport( HID_KEYBOARDMODIFIER_LEFTSHIFT, keyCodes );
+  blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT, keyCodes );
   delay(100);
   bool shift = false;
   bool alt = false;
@@ -184,15 +211,17 @@ void loop()
   // multiple keyRelease reports (that consume memory and bandwidth)
   //  if ( hasKeyPressed )
   //  {
-  for (int rowCount = 0; rowCount < 5; rowCount++)
+  for (int columnCount = 0; columnCount < 12; columnCount++)
   {
-    digitalWrite(rowPin[rowCount], LOW);
-    for (int columnCount = 0; columnCount < 12; columnCount++)
+    digitalWrite(columnPin[columnCount], LOW);
+    for (int rowCount = 0; rowCount < 5; rowCount++)
     {
-      if (digitalRead(columnPin[columnCount]) == LOW)
+      if (digitalRead(rowPin[rowCount]) == LOW)
       {
         int a = Activation[rowCount][columnCount];
-        
+
+        blehid.keyPress('b');
+          blehid.keyRelease();
         if (a == 0) //zero means non letter
         {
           if ((rowCount == 3 || rowCount == 4) && (columnCount == 0 || columnCount == 10))
@@ -233,7 +262,7 @@ void loop()
         }
       }
     }
-    digitalWrite(rowPin[rowCount], HIGH);
+    digitalWrite(columnPin[columnCount], HIGH);
   }
   /*for (int rowCount; rowCount < 5; rowCount++)
     {
