@@ -19,7 +19,7 @@ BLEHidAdafruit blehid;
 int pressedRows[5];
 int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
-int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
+int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 25, 26};
 /*char Activation[2][5][12] = {
 
   {{ HID_KEY_ESCAPE,HID_KEY_1,HID_KEY_2,HID_KEY_3,HID_KEY_4,HID_KEY_5,HID_KEY_6,HID_KEY_7,HID_KEY_8,HID_KEY_9,HID_KEY_0, HID_KEY_BACKSPACE } ,
@@ -37,10 +37,10 @@ int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
   }; */
 char Activation[5][12] =
 { { 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 0 } ,
-  { 0, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '-' } ,
-  { 0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 0 } ,
-  { 0, 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '\'', } ,
-  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+  { '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
+  { 0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\n' } ,
+  { 0, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', } ,
+  { 0, 0, ' ', ' ', ' ', ' ', ' ', ' ', 0, 0, 0 }
 };
 char activationCodes[5][12] =
 { { HID_KEY_ESCAPE, HID_KEY_1, HID_KEY_2, HID_KEY_3, HID_KEY_4, HID_KEY_5, HID_KEY_6, HID_KEY_7, HID_KEY_8, HID_KEY_9, HID_KEY_0, HID_KEY_BACKSPACE } ,
@@ -164,41 +164,9 @@ void keyreport(char HIDcode)
   uint8_t keyCodes[6] = { 0, 0, 0, 0, 0, 0 };
   blehid.keyboardReport( HIDcode , keyCodes );
 }
-void blinky(int number_of_blinks)
-{
-  while (number_of_blinks > 0)
-  {
-    digitalWrite(LED_BUILTIN, 1);
-  delay(200);
-  digitalWrite(LED_BUILTIN, 0);
-  delay(200);
-  number_of_blinks--;
-  }
-  delay(500);
-}
 void loop()
 {
-  digitalWrite(columnPin[1], 0);
-  if (digitalRead(rowPin[2]) == LOW)
-  {
-   blinky(3);
-  } else
-  {
-    blinky(1);
-  }
-  digitalWrite(columnPin[1], 1);
-  return;
-
-
-
-
-
-  
-  blehid.keyPress('1');
-  blehid.keyRelease();
-  uint8_t keyCodes[6] = { HID_KEY_A, 0, 0, 0, 0, 0 };
-  blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT, keyCodes );
-  delay(100);
+  delay(15);
   bool shift = false;
   bool alt = false;
   bool control = false;
@@ -220,8 +188,6 @@ void loop()
       {
         int a = Activation[rowCount][columnCount];
 
-        blehid.keyPress('b');
-          blehid.keyRelease();
         if (a == 0) //zero means non letter
         {
           if ((rowCount == 3 || rowCount == 4) && (columnCount == 0 || columnCount == 10))
