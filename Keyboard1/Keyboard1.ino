@@ -1,12 +1,9 @@
 /*********************************************************************
   This is an example for our nRF52 based Bluefruit LE modules
-
   Pick one up today in the adafruit shop!
-
   Adafruit invests time and resources providing this open source code,
   please support Adafruit and open-source hardware by purchasing
   products from Adafruit!
-
   MIT license, check LICENSE for more information
   All text above, and the splash screen below must be included in
   any redistribution
@@ -19,28 +16,25 @@ BLEHidAdafruit blehid;
 int pressedRows[5];
 int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
-int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 25, 26};
+int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
 /*char Activation[2][5][12] = {
-
   {{ HID_KEY_ESCAPE,HID_KEY_1,HID_KEY_2,HID_KEY_3,HID_KEY_4,HID_KEY_5,HID_KEY_6,HID_KEY_7,HID_KEY_8,HID_KEY_9,HID_KEY_0, HID_KEY_BACKSPACE } ,
   { HID_KEY_TAB,HID_KEY_Q,HID_KEY_W,HID_KEY_E,HID_KEY_R,HID_KEY_T,HID_KEY_Y,HID_KEY_U,HID_KEY_I,HID_KEY_O,HID_KEY_P,HID_KEY_MINUS } ,
   { HID_KEY_CAPS_LOCK, HID_KEY_A,HID_KEY_S, HID_KEY_D,HID_KEY_F,HID_KEY_G,HID_KEY_H,HID_KEY_J,HID_KEY_K,HID_KEY_L,HID_KEY_SEMICOLON, HID_KEY_RETURN } ,
   { HID_KEY_SHIFT_LEFT,HID_KEY_Z,HID_KEY_X, HID_KEY_C,HID_KEY_V, HID_KEY_B,HID_KEY_N,HID_KEY_M,HID_KEY_COMMA,HID_KEY_PERIOD,HID_KEY_BACKSLASH, HID_KEY_SHIFT_RIGHT } ,
   { HID_KEY_CONTROL_LEFT, HID_KEY_GUI_LEFT,HID_KEY_SPACE,HID_KEY_SPACE,HID_KEY_SPACE,HID_KEY_SPACE,HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_NONE, HID_KEY_ALT_RIGHT, HID_KEY_POWER }} ,
-
   {{ HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_EQUAL, HID_KEY_NONE } ,
   { HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_BACKSLASH } ,
   { HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE, HID_KEY_NONE } ,
   { HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE,HID_KEY_NONE, HID_KEY_NONE,HID_KEY_BRACKET_LEFT, HID_KEY_BRACKET_RIGHT } ,
   { HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE, HID_KEY_NONE }}
-
   }; */
 char Activation[5][12] =
 { { 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 0 } ,
-  { '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
-  { 0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\n' } ,
-  { 0, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', } ,
-  { 0, 0, ' ', ' ', ' ', ' ', ' ', ' ', 0, 0, 0 }
+  { 0, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '-' } ,
+  { 0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 0 } ,
+  { 0, 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '\'', } ,
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 char activationCodes[5][12] =
 { { HID_KEY_ESCAPE, HID_KEY_1, HID_KEY_2, HID_KEY_3, HID_KEY_4, HID_KEY_5, HID_KEY_6, HID_KEY_7, HID_KEY_8, HID_KEY_9, HID_KEY_0, HID_KEY_BACKSPACE } ,
@@ -92,7 +86,7 @@ void setup()
      min = 9*1.25=11.25 ms, max = 12*1.25= 15 ms
   */
   /* Bluefruit.setConnInterval(9, 12); */
-
+Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   // Set up and start advertising
   startAdv();
 
@@ -134,7 +128,6 @@ void startAdv(void)
      - Interval:  fast mode = 20 ms, slow mode = 152.5 ms
      - Timeout for fast mode is 30 seconds
      - Start(timeout) with timeout = 0 will advertise forever (until connected)
-
      For recommended advertising interval
      https://developer.apple.com/library/content/qa/qa1931/_index.html
   */
@@ -164,9 +157,23 @@ void keyreport(char HIDcode)
   uint8_t keyCodes[6] = { 0, 0, 0, 0, 0, 0 };
   blehid.keyboardReport( HIDcode , keyCodes );
 }
+void blinky(int number_of_blinks)
+{
+  while (number_of_blinks > 0)
+  {
+    digitalWrite(LED_BUILTIN, 1);
+  delay(200);
+  digitalWrite(LED_BUILTIN, 0);
+  delay(200);
+  number_of_blinks--;
+  }
+  delay(500);
+}
 void loop()
 {
-  delay(15);
+  delay(1000);
+    uint8_t keyCodes[6] = { HID_KEY_A, 0, 0, 0, 0, 0 };
+  blehid.keyboardReport( 0 , keyCodes );
   bool shift = false;
   bool alt = false;
   bool control = false;
@@ -253,12 +260,9 @@ void loop()
       {
         if ( rowCount == 0 )
         {
-
           if ( columnCount == 0 )
           {
-
           }
-
           if ( columnCount == 11 )
           {
            uint8_t keycodesforbcs[6] = {  HID_KEY_BACKSPACE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE };
@@ -267,7 +271,6 @@ void loop()
         }
         if ( rowCount == 1 )
         {
-
            if ( columnCount == 0 )
           {
            uint8_t keycodesfortab[6] = {  HID_KEY_TAB , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE };
@@ -276,12 +279,10 @@ void loop()
         }
         if ( rowCount == 2 )
         {
-
             if ( columnCount == 0 )
           {
             bool capsLock = true;
           }
-
             if ( columnCount == 11 )
           {
            uint8_t keycodesforrtn[6] = {  HID_KEY_RETURN , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE };
@@ -290,7 +291,6 @@ void loop()
         }
         if ( rowCount == 3 )
         {
-
           if ( columnCount == 0 )
           {
             bool Shift = true;
@@ -328,7 +328,6 @@ void loop()
           uint8_t keycodesforrgui[6] = {  HID_KEY_GUI_RIGHT , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE , HID_KEY_NONE };
       blehid.keyboardReport( HID_KEY_NONE , keycodesforrgui );
         }
-
       }
       if ( rowCount != 4 || columnCount != 0 || columnCount != 11)
       {
@@ -355,7 +354,6 @@ void loop()
     blehid.keyboardReport( HID_KEY_NONE , keycodes );
     blehid.keyPress(13);
     blehid.keyRelease();
-
     // Delay a bit after a report
     delay(1000);
   } */
@@ -364,17 +362,13 @@ void loop()
 /*  if (Serial.available())
   {
     char ch = (char) Serial.read();
-
     // echo
     Serial.write(ch);
-
     blehid.keyPress(ch);
     hasKeyPressed = true;
-
     // Delay a bit after a report
     delay(5);
   }
-
   // Request CPU to enter low-power mode until an event/interrupt occurs
   waitForEvent();
   }
@@ -382,7 +376,6 @@ void loop()
 /**
    Callback invoked when received Set LED from central.
    Must be set previously with setKeyboardLedCallback()
-
    The LED bit map is as follows: (also defined by KEYBOARD_LED_* )
       Kana (4) | Compose (3) | ScrollLock (2) | CapsLock (1) | Numlock (0)
 */
