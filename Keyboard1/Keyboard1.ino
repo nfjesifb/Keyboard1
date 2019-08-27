@@ -171,9 +171,38 @@ void blinky(int number_of_blinks)
 }
 void loop()
 {
-  bool shift = false;
-  bool alt = false;
-  bool control = false;
+  bool shift;
+  bool control;
+  bool alt;
+  digitalWrite(rowPin[3], LOW);
+  if (digitalRead(columnPin[0]) == LOW)
+  {
+     shift = true;
+  } else
+  {
+     shift = false;
+  }
+  digitalWrite(rowPin[3], HIGH);
+
+  digitalWrite(rowPin[4], LOW);
+  if (digitalRead(columnPin[0]) == LOW)
+  {
+     control = true;
+  } else
+  {
+     control = false;
+  }
+  digitalWrite(rowPin[4], HIGH);
+  
+  digitalWrite(rowPin[4], LOW);
+  if (digitalRead(columnPin[10]) == LOW)
+  {
+     alt = true;
+  } else
+  {
+     alt = false;
+  }
+  digitalWrite(rowPin[4], HIGH);
   // Modifiers are here..
   // https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/200b3aaefb3256ac26df82ebc9b5b58923d9c37c/cores/nRF5/Adafruit_TinyUSB_Core/tinyusb/src/class/hid/hid.h#L188
   // Keycodes are here..
