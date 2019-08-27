@@ -16,7 +16,7 @@ BLEHidAdafruit blehid;
 int pressedRows[5];
 int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
-int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
+int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 25, 27, 26};
 /*char Activation[2][5][12] = {
   {{ HID_KEY_ESCAPE,HID_KEY_1,HID_KEY_2,HID_KEY_3,HID_KEY_4,HID_KEY_5,HID_KEY_6,HID_KEY_7,HID_KEY_8,HID_KEY_9,HID_KEY_0, HID_KEY_BACKSPACE } ,
   { HID_KEY_TAB,HID_KEY_Q,HID_KEY_W,HID_KEY_E,HID_KEY_R,HID_KEY_T,HID_KEY_Y,HID_KEY_U,HID_KEY_I,HID_KEY_O,HID_KEY_P,HID_KEY_MINUS } ,
@@ -31,9 +31,9 @@ int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 27, 26, 25};
   }; */
 char Activation[5][12] =
 { { '\e', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\b' } ,
-  { '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '-' } ,
-  { 0, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\r' } ,
-  { 0, 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '\'', } ,
+  { '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
+  { 0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\r' } ,
+  { 0, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', } ,
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 char activationCodes[5][12] =
