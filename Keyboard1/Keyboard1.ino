@@ -13,9 +13,6 @@
 BLEDis bledis;
 BLEHidAdafruit blehid;
 
-bool shift;
-bool control;
-bool alt;
 int pressedRows[5];
 int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
@@ -160,6 +157,7 @@ void keyreport(bool shift, bool alt, bool control, char key, char standardKey)
      return;
    }
    blehid.keyboardReport( HID_KEY_NONE , keyCodes );
+   blehid.keyboardReport( HID_KEY_NONE , 0, 0, 0, 0, 0, 0 );
  } else
  {
   blehid.keyPress(standardKey);
@@ -180,6 +178,9 @@ void blinky(int number_of_blinks)
 }
 void loop()
 {
+  bool shift;
+  bool control;
+  bool alt;
   digitalWrite(rowPin[3], LOW);
   if (digitalRead(columnPin[0]) == LOW)
   {
