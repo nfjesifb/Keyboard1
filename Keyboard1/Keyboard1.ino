@@ -223,30 +223,6 @@ void loop()
 
         if (a == 0) //zero means non letter
         {
-          if ((rowCount == 3 || rowCount == 4) && (columnCount == 0 || columnCount == 10))
-          {
-              if ( rowPin[3] == LOW)
-              {
-                shift = true;
-              } else
-              {
-                shift = false;
-              }
-              if ( rowPin[4] == LOW && columnPin[0] == LOW)
-              {
-                control = true;
-              } else
-              {
-                shift = false;
-              }
-              if ( columnPin[10] == LOW)
-              {
-              alt = true;
-              } else
-              {
-                alt = false;
-              }
-          }
           keyreport(activationCodes[rowCount][columnCount]);
         } else
         {
