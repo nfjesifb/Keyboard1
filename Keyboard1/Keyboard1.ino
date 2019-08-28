@@ -13,6 +13,9 @@
 BLEDis bledis;
 BLEHidAdafruit blehid;
 
+bool shift;
+bool control;
+bool alt;
 int pressedRows[5];
 int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
@@ -136,7 +139,7 @@ void startAdv(void)
   Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds
 }
-void modkeyreport(bool shift, bool alt, bool control, char key, char standardKey)
+void keyreport(bool shift, bool alt, bool control, char key, char standardKey)
 {
   if ( standardKey == 0 )
  {
@@ -177,9 +180,6 @@ void blinky(int number_of_blinks)
 }
 void loop()
 {
-  bool shift;
-  bool control;
-  bool alt;
   digitalWrite(rowPin[3], LOW);
   if (digitalRead(columnPin[0]) == LOW)
   {
@@ -226,7 +226,7 @@ void loop()
       if (digitalRead(rowPin[rowCount]) == LOW)
       {
         int a = Activation[rowCount][columnCount];
-            modkeyreport( shift, alt, control, activationCodes[rowCount][columnCount], a);
+            keyreport( shift, alt, control, activationCodes[rowCount][columnCount], a);
       }
     }
     digitalWrite(columnPin[columnCount], HIGH);
