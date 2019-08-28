@@ -31,9 +31,9 @@ int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 25, 27, 26};
   }; */
 char Activation[5][12] =
 { { '\e', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\b' } ,
-  { '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
+  { 0, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
   { 0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\r' } ,
-  { 0, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'', } ,
+  { 0, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'' } ,
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 char activationCodes[5][12] =
@@ -136,26 +136,32 @@ void startAdv(void)
   Bluefruit.Advertising.setFastTimeout(30);      // number of seconds in fast mode
   Bluefruit.Advertising.start(0);                // 0 = Don't stop advertising after n seconds
 }
-void modkeyreport(bool shift, bool alt, bool control, char key)
+void modkeyreport(bool shift, bool alt, bool control, char key, char standardKey)
 {
-  uint8_t keyCodes[6] = { key, 0, 0, 0, 0, 0 };
-  if ( shift == true)
-  {
-    blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , keyCodes );
-  }
-  if ( alt == true)
-  {
-    blehid.keyboardReport( KEYBOARD_MODIFIER_RIGHTALT , keyCodes );
-  }
-  if ( control == true)
-  {
-    blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTCTRL , keyCodes );
-  }
-}
-void keyreport(char HIDcode)
-{
-  uint8_t keyCodes[6] = { 0, 0, 0, 0, 0, 0 };
-  blehid.keyboardReport( HIDcode , keyCodes );
+  if ( standardKey == 0 )
+ {
+   uint8_t keyCodes[6] = { key, 0, 0, 0, 0, 0 };
+   if ( shift == true)
+   {
+     blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , keyCodes );
+     return;
+   }
+   if ( alt == true)
+   {
+     blehid.keyboardReport( KEYBOARD_MODIFIER_RIGHTALT , keyCodes );
+     return;
+   }
+   if ( control == true)
+   {
+     blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTCTRL , keyCodes );
+     return;
+   }
+   blehid.keyboardReport( HID_KEY_NONE , keyCodes );
+ } else
+ {
+  blehid.keyPress(standardKey);
+  blehid.keyRelease();
+ }
 }
 void blinky(int number_of_blinks)
 {
@@ -220,21 +226,7 @@ void loop()
       if (digitalRead(rowPin[rowCount]) == LOW)
       {
         int a = Activation[rowCount][columnCount];
-
-        if (a == 0) //zero means non letter
-        {
-          keyreport(activationCodes[rowCount][columnCount]);
-        } else
-        {
-          if ( shift == true || alt == true || control == true)
-          {
-            modkeyreport( shift, alt, control, activationCodes[rowCount][columnCount]);
-          } else
-          {
-          blehid.keyPress(a);
-          blehid.keyRelease();
-          }
-        }
+            modkeyreport( shift, alt, control, activationCodes[rowCount][columnCount], a);
       }
     }
     digitalWrite(columnPin[columnCount], HIGH);
