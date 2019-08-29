@@ -31,7 +31,7 @@ int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 25, 27, 26};
   }; */
 char Activation[5][12] =
 { { '\e', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\b' } ,
-  { 0, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
+  { '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '-' } ,
   { 0, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\r' } ,
   { 0, 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '\'' } ,
   { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -168,7 +168,7 @@ void blinky(int number_of_blinks)
 {
   while (number_of_blinks > 0)
   {
-    digitalWrite(LED_BUILTIN, 1);
+  digitalWrite(LED_BUILTIN, 1);
   delay(200);
   digitalWrite(LED_BUILTIN, 0);
   delay(200);
@@ -181,35 +181,37 @@ void loop()
   bool shift;
   bool control;
   bool alt;
-  digitalWrite(rowPin[3], LOW);
-  if (digitalRead(columnPin[0]) == LOW)
-  {
-     shift = true;
-  } else
+  digitalWrite(columnPin[0], LOW);
+  if (digitalRead(rowPin[3]) == LOW)
   {
      shift = false;
-  }
-  digitalWrite(rowPin[3], HIGH);
-
-  digitalWrite(rowPin[4], LOW);
-  if (digitalRead(columnPin[0]) == LOW)
+             blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , HID_KEY_N, 0, 0, 0, 0, 0 );
+  } else if (digitalRead(rowPin[3]) == HIGH)
   {
-     control = true;
-  } else
+     shift = true;
+             blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , HID_KEY_A, 0, 0, 0, 0, 0 );
+  }
+  digitalWrite(columnPin[0], HIGH);
+
+  digitalWrite(columnPin[0], LOW);
+  if (digitalRead(rowPin[4]) == LOW)
   {
      control = false;
-  }
-  digitalWrite(rowPin[4], HIGH);
-  
-  digitalWrite(rowPin[4], LOW);
-  if (digitalRead(columnPin[10]) == LOW)
-  {
-     alt = true;
   } else
   {
-     alt = false;
+     control = true;
   }
-  digitalWrite(rowPin[4], HIGH);
+  digitalWrite(columnPin[0], HIGH);
+  
+  digitalWrite(columnPin[10], LOW);
+  if (digitalRead(rowPin[4]) == LOW)
+  {
+     alt = false;
+  } else
+  {
+     alt = true;
+  }
+  digitalWrite(columnPin[10], HIGH);
   // Modifiers are here..
   // https://github.com/adafruit/Adafruit_nRF52_Arduino/blob/200b3aaefb3256ac26df82ebc9b5b58923d9c37c/cores/nRF5/Adafruit_TinyUSB_Core/tinyusb/src/class/hid/hid.h#L188
   // Keycodes are here..
