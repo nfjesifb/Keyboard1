@@ -138,7 +138,26 @@ void startAdv(void)
 }
 void keyreport(bool shift, bool alt, bool control, char key, char standardKey)
 {
-  if ( standardKey == 0 )
+  if ( shift == true || alt == true || control == true && standardKey != 0 )
+  {
+    uint8_t keyCodes[6] = { key, 0, 0, 0, 0, 0 };
+    blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , keyCodes );
+   if ( shift == true)
+   {
+     blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , keyCodes );
+     return;
+   }
+   if ( alt == true)
+   {
+     blehid.keyboardReport( KEYBOARD_MODIFIER_RIGHTALT , keyCodes );
+     return;
+   }
+   if ( control == true)
+   {
+     blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTCTRL , keyCodes );
+     return;
+   }
+  } else if ( standardKey == 0 )
  {
    uint8_t keyCodes[6] = { key, 0, 0, 0, 0, 0 };
    if ( shift == true)
@@ -181,35 +200,36 @@ void loop()
   bool shift;
   bool control;
   bool alt;
+
   digitalWrite(columnPin[0], LOW);
   if (digitalRead(rowPin[3]) == LOW)
   {
-     shift = false;
-             blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , HID_KEY_N, 0, 0, 0, 0, 0 );
+     shift = true;
+             
   } else if (digitalRead(rowPin[3]) == HIGH)
   {
-     shift = true;
-             blehid.keyboardReport( KEYBOARD_MODIFIER_LEFTSHIFT , HID_KEY_A, 0, 0, 0, 0, 0 );
+     shift = false;
+             
   }
   digitalWrite(columnPin[0], HIGH);
 
   digitalWrite(columnPin[0], LOW);
   if (digitalRead(rowPin[4]) == LOW)
   {
-     control = false;
+     control = true;
   } else
   {
-     control = true;
+     control = false;
   }
   digitalWrite(columnPin[0], HIGH);
   
   digitalWrite(columnPin[10], LOW);
   if (digitalRead(rowPin[4]) == LOW)
   {
-     alt = false;
+     alt = true;
   } else
   {
-     alt = true;
+     alt = false;
   }
   digitalWrite(columnPin[10], HIGH);
   // Modifiers are here..
@@ -223,6 +243,7 @@ void loop()
   //  {
   for (int columnCount = 0; columnCount < 12; columnCount++)
   {
+    
     digitalWrite(columnPin[columnCount], LOW);
     for (int rowCount = 0; rowCount < 5; rowCount++)
     {
