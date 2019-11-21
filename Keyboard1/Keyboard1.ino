@@ -16,7 +16,7 @@ BLEHidAdafruit blehid;
 int pressedRows[5];
 int pressedColumns[5];
 int rowPin[5] = { 4, 3, 2, 5, 20};
-int columnPin[12] = { 16, 12, 13, 14, 8, 6, 15, 7, 11, 25, 27, 26};
+int columnPin[12] = { 16, 12, 13, 14, 31, 30, 15, 7, 11, 27, 25, 26};
 /*char Activation[2][5][12] = {
   {{ HID_KEY_ESCAPE,HID_KEY_1,HID_KEY_2,HID_KEY_3,HID_KEY_4,HID_KEY_5,HID_KEY_6,HID_KEY_7,HID_KEY_8,HID_KEY_9,HID_KEY_0, HID_KEY_BACKSPACE } ,
   { HID_KEY_TAB,HID_KEY_Q,HID_KEY_W,HID_KEY_E,HID_KEY_R,HID_KEY_T,HID_KEY_Y,HID_KEY_U,HID_KEY_I,HID_KEY_O,HID_KEY_P,HID_KEY_MINUS } ,
@@ -98,8 +98,8 @@ Bluefruit.Advertising.addAppearance(BLE_APPEARANCE_HID_KEYBOARD);
   pinMode(12, OUTPUT);
   pinMode(13, OUTPUT);
   pinMode(14, OUTPUT);
-  pinMode(8, OUTPUT);
-  pinMode(6, OUTPUT);
+  pinMode(31, OUTPUT);
+  pinMode(30, OUTPUT);
   pinMode(25, OUTPUT);
   pinMode(26, OUTPUT);
   pinMode(27, OUTPUT);
@@ -177,10 +177,12 @@ void keyreport(bool shift, bool alt, bool control, char key, char standardKey)
    }
    blehid.keyboardReport( HID_KEY_NONE , keyCodes );
    blehid.keyboardReport( HID_KEY_NONE , 0, 0, 0, 0, 0, 0 );
- } else
+   delay(50);
+  } else
  {
   blehid.keyPress(standardKey);
   blehid.keyRelease();
+  delay(50);
  }
 }
 void blinky(int number_of_blinks)
