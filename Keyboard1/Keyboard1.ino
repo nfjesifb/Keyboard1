@@ -12,6 +12,7 @@
 
 BLEDis bledis;
 BLEHidAdafruit blehid;
+BLEBas blebas;
 
 int pressedRows[5];
 int pressedColumns[5];
@@ -43,26 +44,20 @@ char activationCodes[5][12] =
   { HID_KEY_SHIFT_LEFT, HID_KEY_Z, HID_KEY_X, HID_KEY_C, HID_KEY_V, HID_KEY_B, HID_KEY_N, HID_KEY_M, HID_KEY_COMMA, HID_KEY_PERIOD, HID_KEY_BACKSLASH, HID_KEY_SHIFT_RIGHT } ,
   { HID_KEY_CONTROL_LEFT, HID_KEY_GUI_LEFT, HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_SPACE, HID_KEY_NONE, HID_KEY_ALT_RIGHT, HID_KEY_POWER }
 };
+unsigned long timeBan[5][12] =
+{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } ,
+  { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+};
+unsigned long currentTime;
 void setup()
 {
-  Serial.begin(115200);
-  while ( !Serial ) delay(10);   // for nrf52840 with native usb
-
-  Serial.println("Bluefruit52 HID Keyboard Example");
-  Serial.println("--------------------------------\n");
-
-  Serial.println();
-  Serial.println("Go to your phone's Bluetooth settings to pair your device");
-  Serial.println("then open an application that accepts keyboard INPUT_PULLUP");
-
-  Serial.println();
-  Serial.println("Enter the character(s) to send:");
-  Serial.println();
-
   Bluefruit.begin();
   // Set max power. Accepted values are: -40, -30, -20, -16, -12, -8, -4, 0, 4
   Bluefruit.setTxPower(4);
-  Bluefruit.setName("Bluefruit52");
+  Bluefruit.setName("Miles's keyboard");
 
   // Configure and Start Device Information Service
   bledis.setManufacturer("Adafruit Industries");
@@ -245,14 +240,18 @@ void loop()
   //  {
   for (int columnCount = 0; columnCount < 12; columnCount++)
   {
-    
+    currentTime = millis();
     digitalWrite(columnPin[columnCount], LOW);
     for (int rowCount = 0; rowCount < 5; rowCount++)
     {
       if (digitalRead(rowPin[rowCount]) == LOW)
       {
+        if(timeBan[rowCount][columnCount]+250 < currentTime)
+        {
         int a = Activation[rowCount][columnCount];
             keyreport( shift, alt, control, activationCodes[rowCount][columnCount], a);
+            timeBan[rowCount][columnCount] = currentTime;
+        }
       }
     }
     digitalWrite(columnPin[columnCount], HIGH);
